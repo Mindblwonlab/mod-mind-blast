@@ -1,0 +1,103 @@
+QTabWidget::pane {
+    background:transparent;
+}
+
+QTabBar::tab {
+    padding: 5px 12px;
+    font-size:11.4px;
+    text-align:center;
+    cursor:point;
+    background-color:rgba(0,0,0,0.2);
+}
+
+QTabBar::tab:hover {
+    color: white;
+}
+
+QTabBar::tab:selected {
+    color: white;
+    border-bottom: none;
+    background-color:rgba(0,0,0,0.4);
+}
+
+QScrollBar:vertical {
+	background: transparent;
+	width: 10px;
+	margin: 0;
+}
+
+QScrollBar::handle:horizontal {
+    background: #343536;
+    min-width: 10px;
+}
+
+QScrollBar::handle:vertical {
+    background: #343536;
+    min-height: 10px;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal,
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+	background: none;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal,
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+      border: none;
+      background: none;
+}
+
+QScrollArea { background: transparent; }
+QScrollArea > QWidget > QWidget { background: transparent; }
+QScrollArea > QWidget > QScrollBar { background: palette(base); }
+
+QPushButton{
+    background:#5999d4;
+	border:none;
+	padding:8px 15px;
+	color:white;
+	width:50px;
+}
+
+#btn_cancel, #btn_install, #btn_next, #btn_prev, #btn_close{
+	background:#5999d4;
+	border:none;
+	padding:8px 15px;
+	color:white;
+	width:50px;
+}
+
+#btn_cancel:hover, #btn_install:hover, #btn_next:hover, #btn_prev:hover, #btn_close:hover{
+	background:#4473b6;
+}
+
+#btn_cancel:pressed , #btn_install:pressed , #btn_next:pressed , #btn_prev:pressed , #btn_close:pressed {
+	background:#6fb1e4;
+}
+
+
+#maya_2022, #maya_2023{
+	background:#FFFFFF;
+	border:1px solid #5999d4;
+	color:#5999d4;
+	padding:8px 15px;
+}
+
+#maya_2022:hover, #maya_2023:hover{
+	background:#4473b6;
+	color:white;
+}
+
+#maya_2022:checked, #maya_2023:checked{
+	background:#6fb1e4;
+	color:white;
+	border:none;
+}
+
+QProgressBar {
+  border: 1px solid #5999d4;
+}
+
+QProgressBar::chunk {
+	background:#4473b6;
+}

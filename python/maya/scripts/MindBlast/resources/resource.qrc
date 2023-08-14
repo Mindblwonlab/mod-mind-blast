@@ -1,0 +1,19 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>icon.ico</file>
+    <file>folder_2.ico</file>
+    <file>about.ico</file>
+    <file>check.ico</file>
+    <file>error.ico</file>
+    <file>pause.ico</file>
+    <file>play.ico</file>
+    <file>shot.ico</file>
+  </qresource>
+  <qresource prefix="images">
+    <file>install_splash.png</file>
+    <file>mb_blast_color.png</file>
+    <file>mb_blast.png</file>
+    <file>logo.png</file>
+    <file>splash.png</file>
+  </qresource>
+</RCC>
