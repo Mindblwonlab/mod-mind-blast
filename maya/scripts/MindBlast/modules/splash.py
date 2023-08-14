@@ -1,12 +1,12 @@
 import os
 import sys
-from utils import util
 from importlib import reload
 from PySide2 import QtWidgets, QtCore, QtGui
 from PySide2.QtUiTools import QUiLoader
 
-reload(util)
+from ..utils import util
 
+reload(util)
 
 
 class Splash(QtWidgets.QDialog):
@@ -37,4 +37,4 @@ class Splash(QtWidgets.QDialog):
         return loader.load(path)
 
 
-from resources import assets
+from ..resources import assets

@@ -1,23 +1,10 @@
-"""
-MIND BLAST V1.0.0
-
-Author: Thiago Silva
-Vendor: Mindblownlab Studio
-date: 2023-10-08
-
-The MindBlast tool in Maya is essential for 3D animators. It provides a real-time preview of animations in development,
-allowing quick assessments of movements and synchronization. Unlike time-consuming final renders, MindBlast is fast and efficient,
-enabling swift iterations and corrections. With configuration options such as resolution and format, MindBlast is an indispensable tool
-for effectively enhancing animations.
-"""
-import sys
-
 from maya import cmds, mel
-from utils import util
 from importlib import reload
 
-from modules import about
-from modules import blast
+
+from .utils import util
+from .modules import about
+from .modules import blast
 
 reload(util)
 reload(about)
@@ -25,8 +12,6 @@ reload(blast)
 
 __menu_name__ = "mind_menu"
 __menu_label__ = "MBLab"
-
-
 
 class MindBlast:
 

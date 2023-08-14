@@ -20,7 +20,7 @@ def get_root_path():
 
 
 def get_root_project():
-    return cmds.workspace(q=True, act=True)
+    return cmds.workspace(q=True, rd=True)
 
 
 def main_maya():
@@ -30,6 +30,7 @@ def main_maya():
 
 def get_ffmpeg():
     try:
-        return os.path.normpath(os.path.join(get_root_path(), "libs", "ffmpeg", "bin", "ffmpeg.exe"))
+        print(os.path.normpath(os.path.join(get_root_path(), os.pardir, os.pardir, os.pardir, "libs", "ffmpeg", "bin", "ffmpeg.exe")))
+        return os.path.normpath(os.path.join(get_root_path(), os.pardir, os.pardir, os.pardir, "libs", "ffmpeg", "bin", "ffmpeg.exe"))
     except:
         return "ffmpeg path error"

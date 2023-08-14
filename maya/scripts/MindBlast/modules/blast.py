@@ -2,23 +2,16 @@ import os
 import sys
 from glob import glob
 import datetime
-from utils import util
 from importlib import reload
 from PySide2 import QtWidgets, QtCore, QtGui
 from PySide2.QtUiTools import QUiLoader
 from maya import cmds, mel
-from modules import splash
+import ffmpeg
+from ..utils import util
+from ..modules import splash
 
 reload(util)
 reload(splash)
-
-local_path = os.path.join(util.get_root_path(), "libs")
-local_path = os.path.normpath(local_path)
-
-if local_path not in sys.path:
-    sys.path.append(local_path)
-
-import ffmpeg
 
 
 class Blast(QtWidgets.QDialog):
@@ -238,54 +231,71 @@ class Blast(QtWidgets.QDialog):
             print("Error: : {}, {}, {}, {}".format(error, exc_type, fname, exc_tb.tb_lineno))
 
     def create_layout(self):
-
-        logo_path = os.path.join(util.get_root_path(), "resources", "logo.png")
-        font_path = os.path.join(util.get_root_path(), "resources", "font.ttf")
-        QtCore.QCoreApplication.processEvents()
-
-        height_bar = 120
-        space = (height_bar / 2)
-        font_size = 18
-        font_color = '#FFFFFF'
-        bar_color = '#00000080'
-        border_color = '#3c3c3c00'
-        border_width = 1
-        line_spacing = -2
-
-        base = ffmpeg.input(self.filename)
-        audio = base.audio
-        base = ffmpeg.drawbox(base, 0, t='fill', width='iw', height=height_bar, y=0, color=bar_color)
-
-        base = ffmpeg.filter([base, ffmpeg.input(logo_path)], 'overlay', 'W-overlay_w-{}'.format(space), (space / 2))
-
-        base = ffmpeg.drawtext(base, fontsize=font_size, fontfile=font_path, text=self.data.get("date"), fontcolor=font_color, escape_text=True, x=space, y='{}-th/2-th-8'.format(space), borderw=border_width, bordercolor=border_color, line_spacing=line_spacing)
-        base = ffmpeg.drawtext(base, fontsize=font_size, fontfile=font_path, text='ANIMATOR: {}'.format(self.data.get('animator')), fontcolor=font_color, escape_text=True, x=space, y='{}-th/2'.format(space), borderw=border_width, bordercolor=border_color, line_spacing=line_spacing)
-        base = ffmpeg.drawtext(base, fontsize=font_size, fontfile=font_path, text="{}".format(self.data.get('step')), fontcolor=font_color, escape_text=True, x=space, y='{}-th/2+th+8'.format(space), borderw=border_width, bordercolor=border_color, line_spacing=line_spacing)
-
-        base = ffmpeg.drawtext(base, fontsize=font_size, fontfile=font_path, text='COUNT\: %{n}', start_number=1, fontcolor=font_color, escape_text=False, x='{} * 5 + 100'.format(space), y='{}-th/2-th-8'.format(space), borderw=border_width, bordercolor=border_color, line_spacing=line_spacing)
-        base = ffmpeg.drawtext(base, fontsize=font_size, fontfile=font_path, text='FRAMES\: %{n}', start_number=int(cmds.playbackOptions(q=True, max=True)), fontcolor=font_color, escape_text=False, x='{} * 5 + 100'.format(space), y='{}-th/2'.format(space), borderw=border_width, bordercolor=border_color, line_spacing=line_spacing)
-        base = ffmpeg.drawtext(base, fontsize=font_size, fontfile=font_path, text='{} {}'.format(self.data.get('sequence'), self.data.get('shot')), fontcolor=font_color, escape_text=True, x='{} * 5 + 100'.format(space), y='{}-th/2+th+8'.format(space), borderw=border_width, bordercolor=border_color, line_spacing=line_spacing)
-
         try:
-            self.ui.progress_bar.setFormat("Convert and create layout")
-            self.ui.progress_bar.setProperty("value", 66)
-            joined = ffmpeg.concat(base, audio, v=1, a=1).node
-            cmd_blast = ffmpeg.output(joined[0], joined[1], self.filename.replace(".avi", ".{}".format(self.data.get("format").lower())), loglevel="quiet")
-            cmd_blast.global_args('-y').run(cmd=util.get_ffmpeg())
-            cmds.launch(mov=self.filename.replace(".avi", ".{}".format(self.data.get("format").lower())))
+            logo_path = os.path.join(util.get_root_path(), "resources", "logo.png")
+            font_path = os.path.join(util.get_root_path(), "resources", "font.ttf")
+            QtCore.QCoreApplication.processEvents()
+
+            height_bar = 120
+            space = (height_bar / 2)
+            font_size = 18
+            font_color = '#FFFFFF'
+            bar_color = '#00000080'
+            border_color = '#3c3c3c00'
+            border_width = 1
+            line_spacing = -2
+
+            base = ffmpeg.input(self.filename)
+            if self.get_sound():
+                audio = base.audio
+            else:
+                audio = None
+            base = ffmpeg.drawbox(base, 0, t='fill', width='iw', height=height_bar, y=0, color=bar_color)
+
+            base = ffmpeg.filter([base, ffmpeg.input(logo_path)], 'overlay', 'W-overlay_w-{}'.format(space), (space / 2))
+
+            base = ffmpeg.drawtext(base, fontsize=font_size, fontfile=font_path, text=self.data.get("date"), fontcolor=font_color, escape_text=True, x=space, y='{}-th/2-th-8'.format(space), borderw=border_width, bordercolor=border_color, line_spacing=line_spacing)
+            base = ffmpeg.drawtext(base, fontsize=font_size, fontfile=font_path, text='ANIMATOR: {}'.format(self.data.get('animator')), fontcolor=font_color, escape_text=True, x=space, y='{}-th/2'.format(space), borderw=border_width, bordercolor=border_color, line_spacing=line_spacing)
+            base = ffmpeg.drawtext(base, fontsize=font_size, fontfile=font_path, text="{}".format(self.data.get('step')), fontcolor=font_color, escape_text=True, x=space, y='{}-th/2+th+8'.format(space), borderw=border_width, bordercolor=border_color, line_spacing=line_spacing)
+
+            base = ffmpeg.drawtext(base, fontsize=font_size, fontfile=font_path, text='COUNT\: %{n}', start_number=1, fontcolor=font_color, escape_text=False, x='{} * 5 + 100'.format(space), y='{}-th/2-th-8'.format(space), borderw=border_width, bordercolor=border_color, line_spacing=line_spacing)
+            base = ffmpeg.drawtext(base, fontsize=font_size, fontfile=font_path, text='FRAMES\: %{n}', start_number=int(cmds.playbackOptions(q=True, max=True)), fontcolor=font_color, escape_text=False, x='{} * 5 + 100'.format(space), y='{}-th/2'.format(space), borderw=border_width, bordercolor=border_color, line_spacing=line_spacing)
+            base = ffmpeg.drawtext(base, fontsize=font_size, fontfile=font_path, text='{} {}'.format(self.data.get('sequence'), self.data.get('shot')), fontcolor=font_color, escape_text=True, x='{} * 5 + 100'.format(space), y='{}-th/2+th+8'.format(space), borderw=border_width, bordercolor=border_color, line_spacing=line_spacing)
+
+            try:
+                self.ui.progress_bar.setFormat("Convert and create layout")
+                self.ui.progress_bar.setProperty("value", 66)
+                if self.get_sound():
+                    joined = ffmpeg.concat(base, audio, v=1, a=1).node
+                    cmd_blast = ffmpeg.output(joined[0], joined[1], self.filename.replace(".avi", ".{}".format(self.data.get("format").lower())), loglevel="quiet")
+                else:
+                    cmd_blast = ffmpeg.output(base, self.filename.replace(".avi", ".{}".format(self.data.get("format").lower())), loglevel="quiet")
+
+                try:
+                    cmd_blast.global_args('-y').run(cmd=util.get_ffmpeg())
+                    cmds.launch(mov=self.filename.replace(".avi", ".{}".format(self.data.get("format").lower())))
+                except Exception as error:
+                    exc_type, exc_obj, exc_tb = sys.exc_info()
+                    fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                    print("Error: : {}, {}, {}, {}".format(error, exc_type, fname, exc_tb.tb_lineno))
+
+            except Exception as error:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print("Error: : {}, {}, {}, {}".format(error, exc_type, fname, exc_tb.tb_lineno))
+
+            QtCore.QCoreApplication.processEvents()
+            self.ui.progress_bar.setVisible(False)
+            self.setDisabled(False)
+            self.ui.progress_bar.setFormat("Playnlast complete create")
+            self.ui.progress_bar.setProperty("value", 99)
+            os.unlink(self.filename)
+            self.prepare_viewport(active=False)
+            self.close()
         except Exception as error:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print("Error: : {}, {}, {}, {}".format(error, exc_type, fname, exc_tb.tb_lineno))
-
-        QtCore.QCoreApplication.processEvents()
-        self.ui.progress_bar.setVisible(False)
-        self.setDisabled(False)
-        self.ui.progress_bar.setFormat("Playnlast complete create")
-        self.ui.progress_bar.setProperty("value", 99)
-        os.unlink(self.filename)
-        self.prepare_viewport(active=False)
-        self.close()
 
     # playpause timeslider
     def play_pause(self):
@@ -320,4 +330,4 @@ class Blast(QtWidgets.QDialog):
         QtCore.QTimer.singleShot(250, self.get_all_cameras)
 
 
-from resources import assets
+from ..resources import assets
