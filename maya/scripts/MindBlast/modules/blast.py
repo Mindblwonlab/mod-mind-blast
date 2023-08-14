@@ -13,7 +13,6 @@ from ..modules import splash
 reload(util)
 reload(splash)
 
-
 class Blast(QtWidgets.QDialog):
     spl = None
     resolutions = {
